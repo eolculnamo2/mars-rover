@@ -1,9 +1,9 @@
 package com.rover.rover.services;
 
-import java.io.File;
+import java.awt.image.RenderedImage;
 import java.io.IOException;
 
 public interface IImageService {
-  void saveImages();
-  void compressImage(File image, String outputLocation) throws IOException;
+  String saveImages();
+  void compressImageAndSave(RenderedImage image, String outputLocation) throws IOException;
 }
