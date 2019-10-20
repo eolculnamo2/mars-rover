@@ -1,5 +1,7 @@
 export interface IGlobalState {
   sol: string;
+  rover: string;
+  cam: string;
 }
 
 export interface IAction {
@@ -9,6 +11,10 @@ export interface IAction {
 
 export interface IActionType {
   [key: string]: string;
+}
+
+export interface IRoverCams {
+  [key: string]: Array<string>;
 }
 
 export type TGlobalAction = {

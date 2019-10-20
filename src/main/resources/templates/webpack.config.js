@@ -11,7 +11,7 @@ module.exports = {
     extensions: ['.js', '.jsx', '.tsx', '.ts']
   },
   devServer: {
-    contentBase: path.join(__dirname, '../', 'static/assets/js'),
+    // contentBase: path.join(__dirname, '../', 'static/assets/js'),
     compress: true,
     open: true,
     inline: true,

@@ -6,10 +6,12 @@ export function reducer(state: IGlobalState, action: IAction): IGlobalState {
 
 export const ACTION_TYPES: IActionType = {
   SET_SOL: 'SET_SOL',
+  SET_CAM: 'SET_CAM',
+  SET_ROVER: 'SET_ROVER',
 };
 
 export const GlobalActions: TGlobalAction = {
-  [ACTION_TYPES.SET_SOL]: (state, action) => {
-    return { ...state, sol: action.payload };
-  },
+  [ACTION_TYPES.SET_SOL]: (state, action) => ({ ...state, sol: action.payload }),
+  [ACTION_TYPES.SET_CAM]: (state, action) => ({ ...state, cam: action.payload }),
+  [ACTION_TYPES.SET_ROVER]: (state, action) => ({ ...state, rover: action.payload }),
 };
