@@ -2,13 +2,10 @@ package com.rover.rover.controllers;
 
 import com.rover.rover.client.RoverClient;
 import com.rover.rover.services.ImageService;
-import com.rover.rover.utils.Constants;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.File;
 
 @RestController
 @RequestMapping("/rovers")

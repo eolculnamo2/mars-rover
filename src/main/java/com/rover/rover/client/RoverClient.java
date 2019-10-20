@@ -1,25 +1,30 @@
 package com.rover.rover.client;
 
 import com.rover.rover.dto.JsonRoverResponseDto;
-import com.rover.rover.utils.Constants;
 import com.rover.rover.utils.Helpers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
 @Service
 public class RoverClient {
+  private HttpURLConnection connection;
+
+  public RoverClient(String url) {
+    try {
+      this.connection = (HttpURLConnection) new URL(url).openConnection();
+    } catch(Exception e) {
+      System.out.println(e);
+    }
+  }
 
   public ArrayList<JsonRoverResponseDto> getJsonResponse() throws IOException, JSONException {
-    HttpURLConnection connection = this.getConnection(Constants.API_URL);
     connection.setRequestMethod("GET");
     connection.connect();
 
@@ -38,24 +43,6 @@ public class RoverClient {
     }
 
     return roverImgUrls;
-  }
-
-  public DataOutputStream readImage(String urlRoute) throws ProtocolException, IOException {
-    HttpURLConnection connection = this.getConnection(urlRoute);
-    connection.setRequestMethod("GET");
-    connection.setDoOutput(true);
-
-    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-    out.flush();
-    out.close();
-
-    return out;
-  }
-
-  private HttpURLConnection getConnection(String urlRoute) throws IOException {
-    URL url = new URL(urlRoute);
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    return connection;
   }
 
 }
