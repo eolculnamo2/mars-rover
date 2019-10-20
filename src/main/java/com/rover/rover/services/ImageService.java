@@ -57,6 +57,7 @@ public class ImageService implements IImageService {
   }
 
   public byte[] readImages() throws IOException {
+    //https://stackoverflow.com/questions/20987392/how-to-pass-images-into-arrayliststring-in-android/20987471#20987471
     File image = new File(Constants.BASE_SAVE_LOCATION+"/2019-10-19/image_0.jpg");
     return Files.readAllBytes(image.toPath());
   }

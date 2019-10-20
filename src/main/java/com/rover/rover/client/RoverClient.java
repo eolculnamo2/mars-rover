@@ -1,6 +1,7 @@
 package com.rover.rover.client;
 
 import com.rover.rover.dto.JsonRoverResponseDto;
+import com.rover.rover.utils.Constants;
 import com.rover.rover.utils.Helpers;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +17,9 @@ import java.util.ArrayList;
 public class RoverClient {
   private HttpURLConnection connection;
 
-  public RoverClient(String url) {
+  public RoverClient() {
     try {
-      this.connection = (HttpURLConnection) new URL(url).openConnection();
+      this.connection = (HttpURLConnection) new URL(Constants.API_URL).openConnection();
     } catch(Exception e) {
       System.out.println(e);
     }
