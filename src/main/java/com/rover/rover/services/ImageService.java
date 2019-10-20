@@ -15,7 +15,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Service
 public class ImageService implements IImageService {
@@ -45,48 +48,48 @@ public class ImageService implements IImageService {
     }
 
     // compress and save files
-    for(RenderedImage image : imgFiles) {
-      try {
-        compressImageAndSave(image, Constants.BASE_SAVE_LOCATION+"/"+Math.random());
-      } catch(IOException e) {
-        System.out.println(e);
-      }
+    try {
+      this.compressImageAndSave(imgFiles);
+    } catch(Exception e) {
+      System.out.println(e);
     }
     return "Test";
   }
 
-  public void compressImageAndSave(RenderedImage image, String outputLocation) throws IOException {
+  public byte[] readImages() throws IOException {
+    File image = new File(Constants.BASE_SAVE_LOCATION+"/2019-10-19/image_0.jpg");
+    return Files.readAllBytes(image.toPath());
+  }
+
+  public void compressImageAndSave(ArrayList<RenderedImage> imgFiles) throws IOException {
     ImageWriter imageWriter = ImageIO.getImageWritersByFormatName("jpg").next();
     ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
 
     imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
     imageWriteParam.setCompressionQuality(Constants.COMPRESSION_QUALITY);
 
-    ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File(outputLocation));
-    imageWriter.setOutput(outputStream);
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String folderName = simpleDateFormat.format(new Date());
+    new File(Constants.BASE_SAVE_LOCATION+"/"+folderName).mkdirs();
+    for(int i = 0; i < imgFiles.size(); i++) {
+      RenderedImage image = imgFiles.get(i);
+      ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File(Constants.BASE_SAVE_LOCATION+"/"+ folderName + "/image_" + i+".jpg"));
+      imageWriter.setOutput(outputStream);
 
-    IIOImage iioImage = new IIOImage(image, null, null);
-    imageWriter.write(null, iioImage, imageWriteParam);
+      IIOImage iioImage = new IIOImage(image, null, null);
+      imageWriter.write(null, iioImage, imageWriteParam);
+    }
 
     imageWriter.dispose();
-//    byte[] buffer = new byte[1024];
-//    FileInputStream inputStream = new FileInputStream(image);
-//    FileOutputStream outputStream = new FileOutputStream(outputLocation);
-//    GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream);
-//    int read;
-//
-//    while((read = inputStream.read(buffer)) != -1) {
-//      gzipOutputStream.write(buffer, 0, read);
-//    }
-//    gzipOutputStream.finish();
-//    gzipOutputStream.close();
-//    outputStream.close();
-//    inputStream.close();
   }
 
   private ArrayList<RenderedImage> getImagesFromUrls(ArrayList<JsonRoverResponseDto> jsonRoverResponseDtos) throws MalformedURLException, IOException {
     ArrayList<RenderedImage> images = new ArrayList<>();
-    for(JsonRoverResponseDto j : jsonRoverResponseDtos) {
+    for(int i = 0; i < jsonRoverResponseDtos.size(); i++) {
+      // limit max images to 20
+      if(i > 19) break;
+
+      JsonRoverResponseDto j = jsonRoverResponseDtos.get(i);
       URL url = new URL(j.getImageUrl());
       images.add(ImageIO.read(url));
     }
