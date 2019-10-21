@@ -18,4 +18,8 @@ public class Helpers {
     }
     return json;
   }
+
+  public static String getPathFromRoverDetails(String cam, String rover, String sol) {
+    return sol + "-" + rover + "-" + cam;
+  }
 }

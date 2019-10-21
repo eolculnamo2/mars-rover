@@ -2,7 +2,7 @@ package com.rover.rover.dto;
 
 import java.io.Serializable;
 
-public class JsonRoverResponseDto implements Serializable {
+public class JsonRoverResponseDTO implements Serializable {
   private String imageUrl;
 
   public String getImageUrl() {

@@ -1,5 +1,5 @@
 export interface IGlobalState {
-  sol: string;
+  sol: number;
   rover: string;
   cam: string;
 }

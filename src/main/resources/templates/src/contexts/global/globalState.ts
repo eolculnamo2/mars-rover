@@ -1,9 +1,9 @@
 import { IGlobalState } from '../../rovers';
 
 const GlobalState: IGlobalState = {
-  sol: '',
+  sol: 1,
   rover: '',
-  cam: '',
+  cam: 'all',
 };
 
 export default GlobalState;

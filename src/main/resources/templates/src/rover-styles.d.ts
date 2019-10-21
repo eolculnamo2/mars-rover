@@ -1,3 +1,3 @@
 export interface IButton {
-  selected?: boolean;
+  selected?: boolean | null;
 }

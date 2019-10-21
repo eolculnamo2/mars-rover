@@ -1,30 +1,34 @@
 package com.rover.rover.controllers;
 
-import com.rover.rover.client.RoverClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rover.rover.dto.DownloadRoverDTO;
+import com.rover.rover.dto.RetrievePhotoDTO;
 import com.rover.rover.services.ImageService;
+import com.rover.rover.utils.Helpers;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/rovers")
 public class RoverApiController {
   private ImageService imageService;
+  private ObjectMapper objectMapper;
 
-  public RoverApiController(ImageService imageService, RoverClient roverClient) {
+  public RoverApiController(ImageService imageService, ObjectMapper objectMapper) {
     this.imageService = imageService;
+    this.objectMapper = objectMapper;
   }
 
   @GetMapping(
-      value="/rovers",
+      value="/get-rover",
       produces = MediaType.IMAGE_JPEG_VALUE
   )
-  public byte[] getRovers() {
+  public byte[] getRovers(RetrievePhotoDTO retrievePhotoDTO) {
     byte[] response;
-
     try {
-      response = this.imageService.readImages();
+      response = this.imageService.readImages(retrievePhotoDTO);
 
     } catch(Exception e) {
       System.out.println(e);
@@ -34,10 +38,15 @@ public class RoverApiController {
     return response;
   }
 
-  //TODO make post request
-  @GetMapping("/save-rovers")
-  public String saveRovers() {
-    this.imageService.saveImages();
+  @PostMapping("/save-rovers")
+  public String saveRovers(HttpServletRequest request) {
+    try {
+      String payloadString = Helpers.convertJson(request.getInputStream());
+      DownloadRoverDTO downloadRoverDTO = objectMapper.readValue(payloadString, DownloadRoverDTO.class);
+      this.imageService.saveImages(downloadRoverDTO);
+    } catch( Exception e ) {
+      System.out.println(e);
+    }
     return "test route";
   }
 }

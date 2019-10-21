@@ -1,43 +1,86 @@
-import React, { FC, useContext } from 'react';
-import { Button, SubmitButton, ButtonBox, Input, OptionsWrapper, FieldWrap, Label } from './style';
+import React, { FC, useContext, useState } from 'react';
+import { Base64 } from 'js-base64';
+import {
+  Button,
+  SubmitButton,
+  ButtonBox,
+  Input,
+  OptionsWrapper,
+  FieldWrap,
+  Label,
+  Select,
+  FlexFields,
+} from './style';
 import GlobalContext from '../../contexts/global';
 import { ACTION_TYPES } from '../../contexts/global/globalActions';
 import { Title } from '..';
+import { roverCams } from '../../shared/constants';
+import { downloadAndSaveImages, getImage } from '../../shared/api';
 
 const OptionsBlock: FC = (): JSX.Element => {
   const { state, dispatch } = useContext(GlobalContext);
+  const { cam, rover, sol } = state;
+  const [img, setImg] = useState();
+
+  async function downloadAndView() {
+    await downloadAndSaveImages(cam, sol, rover);
+    //const encodedImg = 'data:image/bmp;base64,' + Base64.encode(await getImage(cam, sol, rover, 1));
+    setImg('data:image/jpg;base64, ' + (await getImage(cam, sol, rover, 1)));
+  }
 
   return (
     <OptionsWrapper>
       <Title />
-      <FieldWrap>
-        <Label>Select Sol</Label>
-        <Input type="number" />
-      </FieldWrap>
       <ButtonBox>
         <Button
-          onClick={() => dispatch({ type: ACTION_TYPES.SET_CAM, payload: 'curiosity' })}
-          selected={state.cam === 'curiosity'}
+          onClick={() => dispatch({ type: ACTION_TYPES.SET_ROVER, payload: 'curiosity' })}
+          selected={rover === 'curiosity'}
           type="button"
         >
           Curiosity
         </Button>
         <Button
-          onClick={() => dispatch({ type: ACTION_TYPES.SET_CAM, payload: 'opportunity' })}
-          selected={state.cam === 'opportunity'}
+          onClick={() => dispatch({ type: ACTION_TYPES.SET_ROVER, payload: 'opportunity' })}
+          selected={rover === 'opportunity'}
           type="button"
         >
           Opportunity
         </Button>
         <Button
-          onClick={() => dispatch({ type: ACTION_TYPES.SET_CAM, payload: 'spirit' })}
-          selected={state.cam === 'spirit'}
+          onClick={() => dispatch({ type: ACTION_TYPES.SET_ROVER, payload: 'spirit' })}
+          selected={rover === 'spirit'}
           type="button"
         >
           Spirit
         </Button>
       </ButtonBox>
-      <SubmitButton>Download and View</SubmitButton>
+      <FlexFields>
+        <FieldWrap>
+          <Label>Select Sol</Label>
+          <Input
+            onChange={e => dispatch({ type: ACTION_TYPES.SET_SOL, payload: e.target.value })}
+            type="number"
+            value={sol}
+          />
+        </FieldWrap>
+        <FieldWrap>
+          <Label>Select Cam</Label>
+          <Select
+            onChange={e => dispatch({ type: ACTION_TYPES.SET_CAM, payload: e.target.value })}
+            value={cam}
+          >
+            <option value="all">All</option>
+            {roverCams[rover] &&
+              roverCams[rover].map((cam: string) => (
+                <option key={cam} value={cam}>
+                  {cam}
+                </option>
+              ))}
+          </Select>
+        </FieldWrap>
+      </FlexFields>
+      <SubmitButton onClick={downloadAndView}>Download and View</SubmitButton>
+      {img && <img src={img} />}
     </OptionsWrapper>
   );
 };

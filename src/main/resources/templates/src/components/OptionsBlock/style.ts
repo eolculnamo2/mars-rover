@@ -11,6 +11,15 @@ export const OptionsWrapper = styled.div`
   border-radius: 4px;
 `;
 
+export const FlexFields = styled.div`
+  display: flex;
+  justify-content: space-around;
+  max-width: 550px;
+  margin: auto;
+  margin-top: 1em;
+  flex-wrap: wrap;
+`;
+
 export const FieldWrap = styled.div`
   margin: auto;
   max-width: 200px;
@@ -35,6 +44,22 @@ export const Input = styled.input`
   }
 `;
 
+export const Select = styled.select`
+  height: 26px;
+  width: 200px;
+  outline: none;
+  display: block;
+  margin: 1em auto;
+  margin-top: 0.3em;
+  border-radius: 4px;
+  text-transform: capitalize;
+  border: 1px solid ${GRAY1};
+
+  &:focus {
+    border: 1px solid ${ROVER_TEAL};
+  }
+`;
+
 export const ButtonBox = styled.div`
   max-width: 800px;
   margin: auto;
@@ -51,6 +76,10 @@ export const Button = styled.button<IButton>`
   cursor: pointer;
   border: 0;
   border-radius: 4px;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;
 
 export const SubmitButton = styled.button`
@@ -67,4 +96,8 @@ export const SubmitButton = styled.button`
   font-size: 1em;
   border-radius: 4px;
   border: 0;
+
+  &:hover {
+    opacity: 0.8;
+  }
 `;

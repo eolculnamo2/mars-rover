@@ -1,6 +1,7 @@
 package com.rover.rover.client;
 
-import com.rover.rover.dto.JsonRoverResponseDto;
+import com.rover.rover.dto.DownloadRoverDTO;
+import com.rover.rover.dto.JsonRoverResponseDTO;
 import com.rover.rover.utils.Constants;
 import com.rover.rover.utils.Helpers;
 import org.json.JSONArray;
@@ -17,15 +18,24 @@ import java.util.ArrayList;
 public class RoverClient {
   private HttpURLConnection connection;
 
-  public RoverClient() {
+  public RoverClient() {}
+  public RoverClient(DownloadRoverDTO downloadRoverDTO) {
     try {
-      this.connection = (HttpURLConnection) new URL(Constants.API_URL).openConnection();
+      String url = Constants.API_URL + downloadRoverDTO.getRover() + "/photos?sol=" + downloadRoverDTO.getSol();
+
+      if(downloadRoverDTO.getCam() != null && !downloadRoverDTO.getCam().equals("all")) {
+        url += "&camera=" + downloadRoverDTO.getCam();
+      }
+
+      url += "&api_key=" + Constants.API_KEY;
+
+      this.connection = (HttpURLConnection) new URL(url).openConnection();
     } catch(Exception e) {
       System.out.println(e);
     }
   }
 
-  public ArrayList<JsonRoverResponseDto> getJsonResponse() throws IOException, JSONException {
+  public ArrayList<JsonRoverResponseDTO> getJsonResponse() throws IOException, JSONException {
     connection.setRequestMethod("GET");
     connection.connect();
 
@@ -34,9 +44,9 @@ public class RoverClient {
     JSONArray jsonResponseArr = jsonResponse.getJSONArray("photos");
 
 
-    ArrayList<JsonRoverResponseDto> roverImgUrls = new ArrayList<>();
+    ArrayList<JsonRoverResponseDTO> roverImgUrls = new ArrayList<>();
     for(int i = 0; i < jsonResponseArr.length(); i++) {
-      JsonRoverResponseDto resObject = new JsonRoverResponseDto();
+      JsonRoverResponseDTO resObject = new JsonRoverResponseDTO();
       if(jsonResponseArr.getJSONObject(i) != null) {
         resObject.setImageUrl(jsonResponseArr.getJSONObject(i).getString("img_src"));
       }
