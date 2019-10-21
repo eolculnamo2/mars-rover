@@ -1,5 +1,4 @@
 import React, { FC, useContext, useState } from 'react';
-import { Base64 } from 'js-base64';
 import {
   Button,
   SubmitButton,
@@ -24,7 +23,7 @@ const OptionsBlock: FC = (): JSX.Element => {
 
   async function downloadAndView() {
     await downloadAndSaveImages(cam, sol, rover);
-    //const encodedImg = 'data:image/bmp;base64,' + Base64.encode(await getImage(cam, sol, rover, 1));
+    // left off here.. set to global state and call it in photo viewer block
     setImg('data:image/jpg;base64, ' + (await getImage(cam, sol, rover, 1)));
   }
 
