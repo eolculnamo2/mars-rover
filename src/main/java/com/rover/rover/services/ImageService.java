@@ -52,7 +52,7 @@ public class ImageService implements IImageService {
     } catch(Exception e) {
       System.out.println(e);
     }
-    return "Test";
+    return "Success";
   }
 
   public byte[] readImages(RetrievePhotoDTO retrievePhotoDTO) throws IOException {
