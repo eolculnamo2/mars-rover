@@ -19,12 +19,14 @@ import { downloadAndSaveImages, getImage } from '../../shared/api';
 const OptionsBlock: FC = (): JSX.Element => {
   const { state, dispatch } = useContext(GlobalContext);
   const { cam, rover, sol } = state;
-  const [img, setImg] = useState();
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function downloadAndView() {
+    setLoading(true);
     await downloadAndSaveImages(cam, sol, rover);
-    // left off here.. set to global state and call it in photo viewer block
-    setImg('data:image/jpg;base64, ' + (await getImage(cam, sol, rover, 1)));
+    const imgSrc: string = 'data:image/jpg;base64, ' + (await getImage(cam, sol, rover, 1));
+    dispatch({ type: ACTION_TYPES.SET_INITIAL_PHOTO, payload: imgSrc });
+    setLoading(false);
   }
 
   return (
@@ -78,8 +80,9 @@ const OptionsBlock: FC = (): JSX.Element => {
           </Select>
         </FieldWrap>
       </FlexFields>
-      <SubmitButton onClick={downloadAndView}>Download and View</SubmitButton>
-      {img && <img src={img} />}
+      <SubmitButton disabled={!rover || loading} enabled={!!rover} onClick={downloadAndView}>
+        {loading ? 'Downloading Images...' : 'Download and View'}
+      </SubmitButton>
     </OptionsWrapper>
   );
 };

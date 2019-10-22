@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { IButton } from '../../rover-styles';
-import { ROVER_TEAL, GRAY1, ROVER_PURPLE } from '../../shared/styled-variables';
+import { IButton, ISubmitButton } from '../../rover-styles';
+import { ROVER_TEAL, GRAY1, ROVER_PURPLE, DARK1 } from '../../shared/styled-variables';
 
 export const OptionsWrapper = styled.div`
   max-width: 800px;
@@ -76,14 +76,15 @@ export const Button = styled.button<IButton>`
   cursor: pointer;
   border: 0;
   border-radius: 4px;
+  transition: all 0.15s ease-in;
 
   &:hover {
     opacity: 0.8;
   }
 `;
 
-export const SubmitButton = styled.button`
-  background-color: ${ROVER_PURPLE};
+export const SubmitButton = styled.button<ISubmitButton>`
+  background-color: ${({ enabled }) => (enabled ? ROVER_PURPLE : GRAY1)};
   outline: none;
   padding: 1em 0.5em;
   margin-right: 1em;
@@ -91,7 +92,7 @@ export const SubmitButton = styled.button`
   cursor: pointer;
   display: block;
   margin: 1em auto;
-  color: white;
+  color: ${({ enabled }) => (enabled ? 'white' : DARK1)};
   font-weight: 600;
   font-size: 1em;
   border-radius: 4px;

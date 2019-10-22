@@ -2,6 +2,8 @@ export interface IGlobalState {
   sol: number;
   rover: string;
   cam: string;
+  photoSrc: string;
+  photoIndex: number;
 }
 
 export interface IAction {
