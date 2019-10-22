@@ -41,6 +41,7 @@ const OptionsBlock: FC = (): JSX.Element => {
           Curiosity
         </Button>
         <Button
+          data-testid="opportunity-rover-btn"
           onClick={() => dispatch({ type: ACTION_TYPES.SET_ROVER, payload: 'opportunity' })}
           selected={rover === 'opportunity'}
           type="button"
@@ -80,7 +81,12 @@ const OptionsBlock: FC = (): JSX.Element => {
           </Select>
         </FieldWrap>
       </FlexFields>
-      <SubmitButton disabled={!rover || loading} enabled={!!rover} onClick={downloadAndView}>
+      <SubmitButton
+        data-testid="submit-btn"
+        disabled={!rover || loading}
+        enabled={!!rover}
+        onClick={downloadAndView}
+      >
         {loading ? 'Downloading Images...' : 'Download and View'}
       </SubmitButton>
     </OptionsWrapper>

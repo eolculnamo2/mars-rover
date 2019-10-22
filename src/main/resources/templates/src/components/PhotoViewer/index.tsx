@@ -20,7 +20,7 @@ const PhotoViewer: FC = (): JSX.Element => {
 
   if (!photoSrc.length) return <></>;
   return (
-    <ViewerWrap>
+    <ViewerWrap data-testid="photoviewer-wrap">
       <ButtonWrap>
         <NavigateBtn onClick={() => changePhoto(-1)}>Back</NavigateBtn>
         <NavigateBtn onClick={() => changePhoto(1)}>Next</NavigateBtn>

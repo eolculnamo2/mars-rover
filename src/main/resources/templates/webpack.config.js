@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: './src/index.tsx',
   output: {
-    path: path.join(__dirname, '../', 'static/assets/js'),
+    path: path.join(__dirname, '../', 'static'),
     filename: 'bundle.js'
   },
   devtool: 'source-map',
@@ -35,18 +35,6 @@ module.exports = {
         query: {
           presets: ['@babel/env', '@babel/react']
         }
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        loader: 'url-loader',
-      },
-      {
-        test: /\.(scss|css)$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader',
-        ],
       }
     ]
   }
