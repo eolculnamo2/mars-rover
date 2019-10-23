@@ -21,6 +21,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ImageService implements IImageService {
@@ -63,23 +66,40 @@ public class ImageService implements IImageService {
   }
 
   public void compressImageAndSave(ArrayList<RenderedImage> imgFiles, String folderName) throws IOException {
-    ImageWriter imageWriter = ImageIO.getImageWritersByFormatName("jpg").next();
-    ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
 
-    imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-    imageWriteParam.setCompressionQuality(Constants.COMPRESSION_QUALITY);
+    ExecutorService executor= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     new File(Constants.BASE_SAVE_LOCATION+"/"+folderName).mkdirs();
     for(int i = 0; i < imgFiles.size(); i++) {
-      RenderedImage image = imgFiles.get(i);
-      ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File(Constants.BASE_SAVE_LOCATION+"/"+ folderName + "/image_" + i+".jpg"));
-      imageWriter.setOutput(outputStream);
+      final int j = i;
+      Runnable runnableTask = () -> {
+        try {
+          ImageWriter imageWriter = ImageIO.getImageWritersByFormatName("jpg").next();
+          ImageWriteParam imageWriteParam = imageWriter.getDefaultWriteParam();
 
-      IIOImage iioImage = new IIOImage(image, null, null);
-      imageWriter.write(null, iioImage, imageWriteParam);
+          imageWriteParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+          imageWriteParam.setCompressionQuality(Constants.COMPRESSION_QUALITY);
+
+          RenderedImage image = imgFiles.get(j);
+          ImageOutputStream outputStream = ImageIO.createImageOutputStream(new File(Constants.BASE_SAVE_LOCATION + "/" + folderName + "/image_" + j + ".jpg"));
+          imageWriter.setOutput(outputStream);
+          IIOImage iioImage = new IIOImage(image, null, null);
+          imageWriter.write(null, iioImage, imageWriteParam);
+          imageWriter.dispose();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      };
+      executor.execute(runnableTask);
     }
 
-    imageWriter.dispose();
+    executor.shutdown();
+
+    try {
+      executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   private ArrayList<RenderedImage> getImagesFromUrls(ArrayList<JsonRoverResponseDTO> jsonRoverResponseDTOS) throws MalformedURLException, IOException {
